@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>tweet_db_toy</title>
+		<style>
+			#drop {
+				display:block;
+				position: absolute;
+				width:80%;
+				height:80%;
+				background-color:#DDD;
+			}
+		</style>
+		<script type="text/javascript">
+			// hack to use the wonderful jQuery-CSV without having to use jQuery itself
+			var parser = jQuery = {};
+		</script>
+		<script type="text/javascript" src="lib/jquery.csv-0.71.min.js"></script>
+	</head>
+	<body>
+		<span id="drop">drop here</span>
+		<script type="text/javascript">
+			var c = {
+				tweet_id 					: 0,
+				in_reply_to_status_id 		: 1,
+				in_reply_to_user_id 		: 2,
+				retweeted_status_id 		: 3,
+				retweeted_status_user_id 	: 4,
+				timestamp 					: 5,
+				source 						: 6,
+				text 						: 7,
+				expanded_urls 				: 8
+			}
+
+			function handleDrop(event) {
+				event.stopPropagation();
+				event.preventDefault();
+
+				if(event.dataTransfer.files.length > 1) {
+					// more than one file ain't supported, yo
+					return;
+				}
+
+				var file = event.dataTransfer.files[0];
+
+				var fileReader = new FileReader();
+
+				fileReader.onload = function(readEvent) {
+					var content = readEvent.target.result;
+					var result = parser.csv.toArrays(content);
+
+					var totalLines = result.length;
+
+					var filteredTweetCount = 0;
+					var wordCount = 0;
+
+					for(var i=0,j=totalLines;i<j;i++) {
+						if(result[i][c.retweeted_status_id] != '') continue;
+						filteredTweetCount++;
+
+						wordCount += result[i][c.text].split(' ').length;
+					}
+
+					console.log(filteredTweetCount + ' out of ' + totalLines + ' "pure" tweets (retweets ignored)');
+					console.log("word count: " + wordCount);
+				}
+
+				fileReader.readAsText(file);
+			}
+
+			document.getElementById('drop').addEventListener('drop', handleDrop, false);
+			document.getElementById('drop').addEventListener('dragover', function(event){event.stopPropagation();event.preventDefault();event.dataTransfer.dropEffect = 'copy';}, false);
+		</script>
+	</body>
+</html>
