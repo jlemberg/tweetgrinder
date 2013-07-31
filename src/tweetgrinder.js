@@ -28,11 +28,9 @@ var tweetgrinder = (function() {
 
     var ready = false;
 
-    var output = [];
-
     function log(msg) {
         //console.log(msg);
-        output.push(msg);
+        document.getElementById('output').innerHTML += msg + '<br />';
     }
 
     function err(msg) {
@@ -64,8 +62,6 @@ var tweetgrinder = (function() {
         var end = new Date().getTime();
         var time = end - start;
         log('Total plugin execution time: ' + time + 'ms');
-
-        document.getElementById('output').innerHTML = output.join('<br />');
     }
 
     function hookPlugin(plug) {
@@ -88,7 +84,6 @@ var tweetgrinder = (function() {
         ready = (++pluginsLoaded == pluginCount);
         if(ready) {
             log('All plugins loaded');
-            document.getElementById('output').innerHTML = output.join('<br />');
         }
     }
 
