@@ -16,7 +16,8 @@ var tweetgrinder = (function() {
 
     var pluginsToLoad = [
         ['Line count', 'linecount.js'],
-        ['Word count', 'wordcount.js']
+        ['Word count', 'wordcount.js'],
+        ['Tweet sources', 'tweetsource.js']
     ];
 
     var pluginCount = pluginsToLoad.length;
@@ -35,17 +36,20 @@ var tweetgrinder = (function() {
     function main(lines) {
         var i, j, k, l;
 
+        log('');
+
         for(i=0,j=plugins.length;i<j; i++) {
             plugins[i].before(c);
             plugins[i].global(lines, c);
         }
-        for(i=0,j=lines.length;i<j;i++) {
+        for(i=1,j=lines.length;i<j;i++) {
             for(k=0,l=plugins.length;k<l; k++) {
                 plugins[k].during(lines[i], c);
             }
         }
         for(i=0,j=plugins.length;i<j; i++) {
             plugins[i].after(c);
+            log('');
         }
     }
 
