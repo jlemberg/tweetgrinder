@@ -27,8 +27,13 @@
          * Called after all data has been fed to the plugin
          */
         this.after = function(c) {
+            var sort = [];
             for(var source in sources) {
-                t.log(sources[source] + ' tweets from source ' + source);
+                sort.push([source, sources[source]]);
+            }
+            sort.sort(function(a, b) { return a[1] - b[1]} );
+            for(var i= 0, j=sort.length; i<j; i++) {
+                t.log(sort[i][1] + ' tweet(s) from source "'+sort[i][0]+'"');
             }
         }
     }
