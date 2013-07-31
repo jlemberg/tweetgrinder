@@ -34,13 +34,18 @@ var tweetgrinder = (function() {
 
     function main(lines) {
         var i, j, k, l;
+
         for(i=0,j=plugins.length;i<j; i++) {
-            plugins[i].invokeGlobal(lines, c);
+            plugins[i].before(c);
+            plugins[i].global(lines, c);
         }
         for(i=0,j=lines.length;i<j;i++) {
             for(k=0,l=plugins.length;k<l; k++) {
-                plugins[k].invokeLine(lines[i], c);
+                plugins[k].during(lines[i], c);
             }
+        }
+        for(i=0,j=plugins.length;i<j; i++) {
+            plugins[i].after(c);
         }
     }
 
@@ -97,7 +102,13 @@ var tweetgrinder = (function() {
     var exports = {
         'hookPlugin': hookPlugin,
         'init': init,
-        'log' : log
+        'log' : log,
+        'pluginPrototype' : {
+            before:function(){},
+            global:function(){},
+            during:function(){},
+            after:function(){}
+        }
     }
 
     return exports;
