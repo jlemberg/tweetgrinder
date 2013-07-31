@@ -34,7 +34,7 @@
         this.after = function(c) {
             var sort = [];
             for(var tag in hashtags) {
-                if(hashtags[tag] < 2) continue;
+                if(hashtags[tag] < 4) continue;
                 sort.push([tag, hashtags[tag]]);
             }
             sort.sort(function(a, b) { return a[1] - b[1]} );

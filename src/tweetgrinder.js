@@ -19,7 +19,8 @@ var tweetgrinder = (function() {
         ['Word count', 'wordcount.js'],
         ['Tweet sources', 'tweetsource.js'],
         ['Swear words', 'swears.js'],
-        ['Hashtag usage', 'hashtagusage.js']
+        ['Hashtag usage', 'hashtagusage.js'],
+        ['Link types', 'linktypes.js']
     ];
 
     var pluginCount = pluginsToLoad.length;
