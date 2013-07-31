@@ -17,7 +17,8 @@ var tweetgrinder = (function() {
     var pluginsToLoad = [
         ['Line count', 'linecount.js'],
         ['Word count', 'wordcount.js'],
-        ['Tweet sources', 'tweetsource.js']
+        ['Tweet sources', 'tweetsource.js'],
+        ['Swear words', 'swears.js']
     ];
 
     var pluginCount = pluginsToLoad.length;
@@ -36,6 +37,9 @@ var tweetgrinder = (function() {
     function main(lines) {
         var i, j, k, l;
 
+        var start = new Date().getTime();
+
+        log('Executing '+pluginCount+' plugins');
         log('');
 
         for(i=0,j=plugins.length;i<j; i++) {
@@ -51,6 +55,10 @@ var tweetgrinder = (function() {
             plugins[i].after(c);
             log('');
         }
+
+        var end = new Date().getTime();
+        var time = end - start;
+        log('Total plugin execution time: ' + time + 'ms');
     }
 
     function hookPlugin(plug) {
