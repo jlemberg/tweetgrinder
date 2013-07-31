@@ -8,7 +8,7 @@
         }
 
         this.after = function() {
-            t.log('Line count: ' + lineCount);
+            t.log('Tweet count: ' + lineCount);
         }
     }
 

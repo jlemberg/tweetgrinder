@@ -27,8 +27,11 @@ var tweetgrinder = (function() {
 
     var ready = false;
 
+    var output = [];
+
     function log(msg) {
-        console.log(msg);
+        //console.log(msg);
+        output.push(msg);
     }
 
     function err(msg) {
@@ -60,6 +63,8 @@ var tweetgrinder = (function() {
         var end = new Date().getTime();
         var time = end - start;
         log('Total plugin execution time: ' + time + 'ms');
+
+        document.getElementById('output').innerHTML = output.join('<br />');
     }
 
     function hookPlugin(plug) {
