@@ -86,7 +86,10 @@ var tweetgrinder = (function() {
 
     function scriptOnload() {
         ready = (++pluginsLoaded == pluginCount);
-        if(ready) log('All plugins loaded');
+        if(ready) {
+            log('All plugins loaded');
+            document.getElementById('output').innerHTML = output.join('<br />');
+        }
     }
 
     function drop(event) {
