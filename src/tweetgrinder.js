@@ -21,7 +21,7 @@ var tweetgrinder = (function() {
         'swears',
         'hashtagusage',
         'linktypes',
-        'wordtimes'
+        'tweettimes'
     ];
 
     var pluginCount = pluginsToLoad.length;

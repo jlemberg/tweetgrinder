@@ -1,7 +1,7 @@
 (function(t){
     var plugin = function() {
 
-        this.name = 'Word times'
+        this.name = 'Tweet times'
 
         this.useGraph = true;
 
@@ -55,8 +55,7 @@
                 labels.push(h);
             }
 
-            console.log('sasdads');
-
+            words.push('<span style="color:#000">'+this.name+'</span><br />');
 
             for(var i=0; i<searchTermCount; i++) {
                 var dataSet = [];

@@ -8,6 +8,13 @@
 
         this.useGraph = true;
 
+        this.config = {
+            minimumUsage : {
+                type : 'text',
+                value : 8,
+                label : 'Min. amount of uses'
+            }
+        }
 
         function randCol() {
             return Math.ceil((Math.random()*255));
@@ -54,7 +61,7 @@
             var outputDiv = this.graphContext.canvas.parentNode;
             outputDiv.appendChild(labelSpan(this.name+'<br />','#000'));
             for(var tag in hashtags) {
-                if(hashtags[tag] < 8) continue;
+                if(hashtags[tag] < this.config.minimumUsage.value) continue;
                 var dataColor = 'rgb('+randCol()+','+randCol()+','+randCol()+')';
                 data.push({
                     value:hashtags[tag],
