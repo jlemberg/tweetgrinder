@@ -27,7 +27,11 @@ var tweetgrinder = (function() {
     var pluginCount = pluginsToLoad.length;
     var pluginsLoaded = 0;
 
+    var tweet_data = null;
+
     var ready = false;
+
+    var $drop = document.getElementById('drop');
 
     function log(msg, noNewline) {
         //console.log(msg);
@@ -41,7 +45,7 @@ var tweetgrinder = (function() {
         // todo ... something
     }
 
-    function main(lines) {
+    function main() {
         var i, j, k, l;
 
         var start = new Date().getTime();
@@ -56,11 +60,11 @@ var tweetgrinder = (function() {
             }
 
             plugins[i].before(c);
-            plugins[i].global(lines, c);
+            plugins[i].global(tweet_data, c);
         }
-        for(i=1,j=lines.length;i<j;i++) {
+        for(i=1,j=tweet_data.length;i<j;i++) {
             for(k=0,l=plugins.length;k<l; k++) {
-                plugins[k].during(lines[i], c);
+                plugins[k].during(tweet_data[i], c);
             }
         }
         for(i=0,j=plugins.length;i<j; i++) {
@@ -153,22 +157,33 @@ var tweetgrinder = (function() {
             return;
         }
 
+        $drop.removeEventListener('drop', drop);
+        $drop.removeEventListener('dragover', dragOver);
+
         var file = event.dataTransfer.files[0];
 
         var fileReader = new FileReader();
 
         fileReader.onload = function(readEvent) {
-            main((parser.csv.toArrays(readEvent.target.result)));
+            tweet_data = parser.csv.toArrays(readEvent.target.result);
+            $drop.innerHTML = 'Now click here to start GRINDING';
+            $drop.addEventListener('click', main);
         };
 
         fileReader.readAsText(file);
     }
 
+    function dragOver(e){
+        e.stopPropagation();
+        e.preventDefault();
+        e.dataTransfer.dropEffect='copy';
+    }
+
     function init() {
         loadPlugins();
 
-        document.getElementById('drop').addEventListener('drop', drop, false);
-        document.getElementById('drop').addEventListener('dragover', function(e){e.stopPropagation();e.preventDefault();e.dataTransfer.dropEffect='copy';}, false);
+        $drop.addEventListener('drop', drop, false);
+        $drop.addEventListener('dragover', dragOver, false);
     }
 
     var exports = {
