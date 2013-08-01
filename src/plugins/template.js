@@ -1,6 +1,8 @@
 (function(t){
     var plugin = function() {
 
+        this.name = 'template';
+
         /**
          * Set to true if you want to be assigned a canvas 2d context to make a graph with
          * @type {boolean}

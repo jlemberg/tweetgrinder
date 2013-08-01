@@ -15,13 +15,13 @@ var tweetgrinder = (function() {
     var plugins = [];
 
     var pluginsToLoad = [
-        //['Line count', 'linecount.js'],
-        //['Word count', 'wordcount.js'],
-        //['Tweet sources', 'tweetsource.js'],
-        //['Swear words', 'swears.js'],
-        //['Hashtag usage', 'hashtagusage.js'],
-        //['Link types', 'linktypes.js'],
-        ['Word Times', 'wordtimes.js']
+        'linecount.js',
+        'wordcount.js',
+        'tweetsource.js',
+        'swears.js',
+        'hashtagusage.js',
+        'linktypes.js',
+        'wordtimes.js'
     ];
 
     var pluginCount = pluginsToLoad.length;
@@ -29,9 +29,12 @@ var tweetgrinder = (function() {
 
     var ready = false;
 
-    function log(msg) {
+    function log(msg, noNewline) {
         //console.log(msg);
-        document.getElementById('output').innerHTML += msg + '<br />';
+        document.getElementById('output').innerHTML += msg;
+        if(!noNewline) {
+            document.getElementById('output').innerHTML += '<br />';
+        }
     }
 
     function err(msg) {
@@ -46,17 +49,8 @@ var tweetgrinder = (function() {
         log('Executing '+pluginCount+' plugins');
         log('');
 
-        var anchor = document.getElementById('output_anchor');
         for(i=0,j=plugins.length;i<j; i++) {
             if(plugins[i].useGraph) {
-                var element = document.createElement('div');
-                element.className = 'output_element';
-                var canvas = document.createElement('canvas');
-                canvas.width = canvas.height = '500';
-                element.appendChild(canvas);
-                anchor.parentNode.insertBefore(element,anchor);
-                var context = canvas.getContext('2d');
-                plugins[i].graphContext = context;
                 document.getElementById('graph_output').style.display='block';
                 document.getElementById('graph_output').previousElementSibling.style.display='block';
             }
@@ -86,10 +80,10 @@ var tweetgrinder = (function() {
     function loadPlugins() {
         log('Loading plugins');
         for(var i=0; i<pluginCount; i++) {
-            log('Loading plugin "'+pluginsToLoad[i][0]+'" ('+(i+1)+'/'+pluginCount+')');
+            log('Loading plugin "'+pluginsToLoad[i]+'" ('+(i+1)+'/'+pluginCount+')');
             var script = document.createElement('script');
             script.type = 'text/javascript';
-            script.src = 'src/plugins/'+pluginsToLoad[i][1];
+            script.src = 'src/plugins/'+pluginsToLoad[i];
             script.onload = scriptOnload;
             var tag = document.getElementsByTagName('script')[0];
             tag.parentNode.insertBefore(script, tag);
@@ -100,34 +94,51 @@ var tweetgrinder = (function() {
         ready = (++pluginsLoaded == pluginCount);
         if(ready) {
             log('All plugins loaded');
+            initPlugins();
+        }
+    }
 
-            var anchor = document.getElementById('config_anchor');
-            for(var i = 0, j=plugins.length; i<j; i++) {
-                if(plugins[i].config) {
-                    var element = document.createElement('div');
-                    element.className = 'config_element';
+    function initPlugins() {
+        var confAnchor = document.getElementById('config_anchor');
+        var outputAnchor = document.getElementById('output_anchor');
 
-                    for (var item in plugins[i].config) {
-                        var configInput = document.createElement('input');
-                        configInput.type = plugins[i].config[item].type;
-                        configInput.value = plugins[i].config[item].value;
-                        configInput.id = 'plugin_'+i+'_config_'+item;
-                        configInput.onchange = (function(plugin, configItem){
-                            return function(){
-                                plugin.config[configItem].value = this.value;
-                            }
-                        })(plugins[i],item);
-                        var label = document.createElement('label');
-                        label.innerHTML = plugins[i].config[item].label;
-                        label.htmlFor = configInput.id;
-                        element.appendChild(configInput);
-                        element.appendChild(label);
-                        element.appendChild(document.createElement('br'));
-                    }
+        for(var i = 0, j=plugins.length; i<j; i++) {
+            log('Initializing plugin "'+plugins[i].name+'"... ', true);
+            if(plugins[i].config) {
+                var element = document.createElement('div');
+                element.className = 'config_element';
 
-                    anchor.parentNode.insertBefore(element,anchor);
+                for (var item in plugins[i].config) {
+                    var configInput = document.createElement('input');
+                    configInput.type = plugins[i].config[item].type;
+                    configInput.value = plugins[i].config[item].value;
+                    configInput.id = 'plugin_'+i+'_config_'+item;
+                    configInput.onchange = (function(plugin, configItem){
+                        return function(){
+                            plugin.config[configItem].value = this.value;
+                        }
+                    })(plugins[i],item);
+                    var label = document.createElement('label');
+                    label.innerHTML = plugins[i].config[item].label;
+                    label.htmlFor = configInput.id;
+                    element.appendChild(configInput);
+                    element.appendChild(label);
+                    element.appendChild(document.createElement('br'));
                 }
+
+                confAnchor.parentNode.insertBefore(element,confAnchor);
             }
+            if(plugins[i].useGraph) {
+                var element = document.createElement('div');
+                element.className = 'output_element';
+                var canvas = document.createElement('canvas');
+                canvas.width = canvas.height = '500';
+                element.appendChild(canvas);
+                outputAnchor.parentNode.insertBefore(element,outputAnchor);
+                var context = canvas.getContext('2d');
+                plugins[i].graphContext = context;
+            }
+            log('done');
         }
     }
 
@@ -165,6 +176,7 @@ var tweetgrinder = (function() {
         'init': init,
         'log' : log,
         'pluginPrototype' : {
+            name:'',
             before:function(){},
             global:function(){},
             during:function(){},

@@ -1,6 +1,8 @@
 (function(t){
     var plugin = function() {
 
+        this.name = 'Tweet source';
+
         var sources;
 
         /**

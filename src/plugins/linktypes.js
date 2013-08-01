@@ -1,6 +1,8 @@
 (function(t){
     var plugin = function() {
 
+        this.name = 'Link types';
+
         var links;
         var linkTypes;
         var urlRegex = /\/\/.+?(?: |$)/;

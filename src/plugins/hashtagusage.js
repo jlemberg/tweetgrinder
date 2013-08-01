@@ -1,7 +1,7 @@
 (function(t){
     var plugin = function() {
 
-
+        this.name = 'Hashtag usage';
 
         var hashtags;
         var hashtagRegex;

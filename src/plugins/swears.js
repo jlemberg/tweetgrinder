@@ -1,6 +1,8 @@
 (function(t){
     var plugin = function() {
 
+        this.name = 'Bad words';
+
         var swears;
         var regexp;
         var swearCount;

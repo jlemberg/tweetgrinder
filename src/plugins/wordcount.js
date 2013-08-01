@@ -1,5 +1,8 @@
 (function(t){
     var plugin = function() {
+
+        this.name = 'Word count';
+
         var words;
 
         this.before = function(){

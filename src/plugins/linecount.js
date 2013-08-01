@@ -1,6 +1,8 @@
 (function(t){
     var plugin = function() {
 
+        this.name = 'Line count';
+
         var lineCount = 0;
 
         this.global = function(data, c) {
