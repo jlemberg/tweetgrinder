@@ -20,8 +20,7 @@ var tweetgrinder = (function() {
         'tweetsource.js',
         'swears.js',
         'hashtagusage.js',
-        'linktypes.js',
-        'wordtimes.js'
+        'linktypes.js'
     ];
 
     var pluginCount = pluginsToLoad.length;
@@ -50,6 +49,8 @@ var tweetgrinder = (function() {
 
         var start = new Date().getTime();
 
+        document.getElementById('output').innerHTML = '';
+
         log('Executing '+pluginCount+' plugins');
         log('');
 
@@ -57,6 +58,16 @@ var tweetgrinder = (function() {
             if(plugins[i].useGraph) {
                 document.getElementById('graph_output').style.display='block';
                 document.getElementById('graph_output').previousElementSibling.style.display='block';
+
+                // clear plugin canvas
+                plugins[i].graphContext.canvas.width = plugins[i].graphContext.canvas.width;
+
+                var nextOfKin = plugins[i].graphContext.canvas.nextSibling;
+                while(nextOfKin) {
+                    var next = nextOfKin.nextSibling;
+                    nextOfKin.parentNode.removeChild(nextOfKin);
+                    nextOfKin = next;
+                }
             }
 
             plugins[i].before(c);
@@ -68,6 +79,7 @@ var tweetgrinder = (function() {
             }
         }
         for(i=0,j=plugins.length;i<j; i++) {
+            log('Plugin '+plugins[i].name+':');
             plugins[i].after(c);
             log('');
         }
@@ -111,6 +123,8 @@ var tweetgrinder = (function() {
             if(plugins[i].config) {
                 var element = document.createElement('div');
                 element.className = 'config_element';
+                document.getElementById('config_area').style.display='block';
+                document.getElementById('config_area').previousElementSibling.style.display='block';
 
                 for (var item in plugins[i].config) {
                     var configInput = document.createElement('input');
