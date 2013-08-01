@@ -15,12 +15,13 @@ var tweetgrinder = (function() {
     var plugins = [];
 
     var pluginsToLoad = [
-        'linecount.js',
-        'wordcount.js',
-        'tweetsource.js',
-        'swears.js',
-        'hashtagusage.js',
-        'linktypes.js'
+        'linecount',
+        'wordcount',
+        'tweetsource',
+        'swears',
+        'hashtagusage',
+        'linktypes',
+        'wordtimes'
     ];
 
     var pluginCount = pluginsToLoad.length;
@@ -99,7 +100,7 @@ var tweetgrinder = (function() {
             log('Loading plugin "'+pluginsToLoad[i]+'" ('+(i+1)+'/'+pluginCount+')');
             var script = document.createElement('script');
             script.type = 'text/javascript';
-            script.src = 'src/plugins/'+pluginsToLoad[i];
+            script.src = 'src/plugins/'+pluginsToLoad[i]+'.js';
             script.onload = scriptOnload;
             var tag = document.getElementsByTagName('script')[0];
             tag.parentNode.insertBefore(script, tag);
@@ -139,6 +140,11 @@ var tweetgrinder = (function() {
                     var label = document.createElement('label');
                     label.innerHTML = plugins[i].config[item].label;
                     label.htmlFor = configInput.id;
+                    var title = document.createElement('span');
+                    title.style.fontWeight = 'bold';
+                    title.innerHTML = plugins[i].name;
+                    element.appendChild(title);
+                    element.appendChild(document.createElement('br'));
                     element.appendChild(configInput);
                     element.appendChild(label);
                     element.appendChild(document.createElement('br'));
@@ -147,7 +153,7 @@ var tweetgrinder = (function() {
                 confAnchor.parentNode.insertBefore(element,confAnchor);
             }
             if(plugins[i].useGraph) {
-                var element = document.createElement('div');
+                element = document.createElement('div');
                 element.className = 'output_element';
                 var canvas = document.createElement('canvas');
                 canvas.width = canvas.height = '500';

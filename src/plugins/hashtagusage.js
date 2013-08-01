@@ -52,7 +52,7 @@
         this.after = function(c) {
             var data = [];
             var outputDiv = this.graphContext.canvas.parentNode;
-
+            outputDiv.appendChild(labelSpan(this.name+'<br />','#000'));
             for(var tag in hashtags) {
                 if(hashtags[tag] < 8) continue;
                 var dataColor = 'rgb('+randCol()+','+randCol()+','+randCol()+')';
@@ -60,10 +60,10 @@
                     value:hashtags[tag],
                     color:dataColor
                 });
-                outputDiv.appendChild(labelSpan(tag,dataColor));
+                outputDiv.appendChild(labelSpan(tag+'&nbsp;('+hashtags[tag]+')',dataColor));
             }
 
-            new Chart(this.graphContext).Doughnut(data);
+            new Chart(this.graphContext).Doughnut(data, {animation:false});
         }
 
     }
