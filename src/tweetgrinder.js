@@ -46,6 +46,18 @@ var tweetgrinder = (function() {
         log('');
 
         for(i=0,j=plugins.length;i<j; i++) {
+            if(plugins[i].useGraph) {
+                var element = document.createElement('div');
+                element.className = 'output_element';
+                var canvas = document.createElement('canvas');
+                canvas.width = canvas.height = '500';
+                var anchor = document.getElementById('output_anchor');
+                element.appendChild(canvas);
+                anchor.parentNode.insertBefore(element,anchor);
+                var context = canvas.getContext('2d');
+                plugins[i].graphContext = context;
+            }
+
             plugins[i].before(c);
             plugins[i].global(lines, c);
         }
@@ -76,7 +88,8 @@ var tweetgrinder = (function() {
             script.type = 'text/javascript';
             script.src = 'src/plugins/'+pluginsToLoad[i][1];
             script.onload = scriptOnload;
-            document.getElementsByTagName('script')[0].insertBefore(script);
+            var tag = document.getElementsByTagName('script')[0];
+            tag.parentNode.insertBefore(script, tag);
         }
     }
 
@@ -124,7 +137,9 @@ var tweetgrinder = (function() {
             before:function(){},
             global:function(){},
             during:function(){},
-            after:function(){}
+            after:function(){},
+            useGraph:false,
+            graphContext:null
         }
     }
 

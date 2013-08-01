@@ -2,6 +2,12 @@
     var plugin = function() {
 
         /**
+         * Set to true if you want to be assigned a canvas 2d context to make a graph with
+         * @type {boolean}
+         */
+        this.useGraph = false;
+
+        /**
          * Called before any data is fed to the plugin
          */
         this.before = function(c) {

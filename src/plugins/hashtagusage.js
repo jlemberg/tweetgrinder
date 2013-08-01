@@ -1,8 +1,26 @@
 (function(t){
     var plugin = function() {
 
+
+
         var hashtags;
         var hashtagRegex;
+
+        this.useGraph = true;
+
+
+        function randCol() {
+            return Math.ceil((Math.random()*255));
+        }
+
+        function labelSpan(label, color) {
+            var s = document.createElement('span');
+            s.style.color = color;
+            s.style.fontWeight = 'bold';
+            s.style.margin = '5px';
+            s.innerHTML = label + ' ';
+            return s;
+        }
 
         /**
          * Called before any data is fed to the plugin
@@ -32,16 +50,22 @@
          * Called after all data has been fed to the plugin
          */
         this.after = function(c) {
-            var sort = [];
+            var data = [];
+            var outputDiv = this.graphContext.canvas.parentNode;
+
             for(var tag in hashtags) {
-                if(hashtags[tag] < 4) continue;
-                sort.push([tag, hashtags[tag]]);
+                if(hashtags[tag] < 8) continue;
+                var dataColor = 'rgb('+randCol()+','+randCol()+','+randCol()+')';
+                data.push({
+                    value:hashtags[tag],
+                    color:dataColor
+                });
+                outputDiv.appendChild(labelSpan(tag,dataColor));
             }
-            sort.sort(function(a, b) { return a[1] - b[1]} );
-            for(var i= 0, j=sort.length; i<j; i++) {
-                t.log('Hashtag ' + sort[i][0] + ' used '+sort[i][1]+' times');
-            }
+
+            new Chart(this.graphContext).Doughnut(data);
         }
+
     }
 
     plugin.prototype = t.pluginPrototype;

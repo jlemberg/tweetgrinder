@@ -33,19 +33,37 @@
                 border: 10px dashed #AAA;
                 font-family: monospace;
             }
+            #graph_output {
+                border-radius: 5px;
+                border: 5px solid #DDD;
+            }
+            #output_anchor {
+                clear:both;
+            }
+            .output_element {
+                border-radius:10px;
+                border: 3px dotted #DDD;
+                margin: 20px;
+                width: 500px;
+                float:left;
+                text-align:center;
+            }
         </style>
         <script type="text/javascript">
             // hack to use the wonderful jQuery-CSV without having to use jQuery itself
             var parser = jQuery = {};
         </script>
         <script type="text/javascript" src="lib/jquery.csv-0.71.min.js"></script>
+        <script type="text/javascript" src="lib/Chart.min.js"></script>
     </head>
     <body>
         <a href="https://github.com/jlemberg/tweetgrinder" target="_blank"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_darkblue_121621.png" alt="Fork me on GitHub"></a>
         <h1>Tweetgrinder 0.1.0</h1>
         <h2>Input</h2>
         <div id="drop">Drop "tweets.csv" in this here green area</div>
-        <h2>Output</h2>
+        <h2>Graph Output</h2>
+        <div id="graph_output"><div id="output_anchor"></div></div>
+        <h2>Text Output</h2>
         <div id="output"></div>
         <script type="text/javascript" src='src/tweetgrinder.js'></script>
     </body>
