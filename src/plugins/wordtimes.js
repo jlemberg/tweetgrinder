@@ -5,26 +5,18 @@
          * Set to true if you want to be assigned a canvas 2d context to make a graph with
          * @type {boolean}
          */
-        this.useGraph = false;
+        this.useGraph = true;
 
         /**
          * Plugin configuration
          */
-        this.config = null;
-
-        /**
-         * Called before any data is fed to the plugin
-         */
-        this.before = function(c) {
-
-        }
-
-        /**
-         * Receives all data at once
-         */
-        this.global = function(data, c) {
-
-        }
+        this.config = {
+            word : {
+                type : 'text',
+                value : 'foo',
+                label : 'text to search for'
+            }
+        };
 
         /**
          * Receives one line of data at a time

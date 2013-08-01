@@ -38,7 +38,8 @@
                 border: 5px solid #DDD;
                 display:none;
             }
-            #output_anchor {
+            #output_anchor,
+            #config_anchor {
                 clear:both;
             }
             .output_element {
@@ -48,6 +49,25 @@
                 width: 500px;
                 float:left;
                 text-align:center;
+            }
+            #config_area {
+                padding:10px;
+                border: 5px solid #DDD;
+                border-radius:5px;
+            }
+            .config_element {
+                margin: 20px;
+                padding: 10px;
+                float:left;
+                border: 2px dashed #DDD;
+                border-radius:5px;
+            }
+            input[type=text]{
+                border: 1px solid #ddd;
+                border-radius: 2px;
+                background-color: #eee;
+                padding: 3px;
+                margin-right: 10px;
             }
         </style>
         <script type="text/javascript">
@@ -62,6 +82,8 @@
         <h1>Tweetgrinder 0.1.0</h1>
         <h2>Input</h2>
         <div id="drop">Drop "tweets.csv" in this here green area</div>
+        <h2>Config</h2>
+        <div id="config_area"><div id="config_anchor"></div></div>
         <h2 style="display:none;">Graph Output</h2>
         <div id="graph_output"><div id="output_anchor"></div></div>
         <h2>Text Output</h2>

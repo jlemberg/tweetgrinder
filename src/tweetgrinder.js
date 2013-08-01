@@ -15,12 +15,13 @@ var tweetgrinder = (function() {
     var plugins = [];
 
     var pluginsToLoad = [
-        ['Line count', 'linecount.js'],
-        ['Word count', 'wordcount.js'],
-        ['Tweet sources', 'tweetsource.js'],
-        ['Swear words', 'swears.js'],
-        ['Hashtag usage', 'hashtagusage.js'],
-        ['Link types', 'linktypes.js']
+        //['Line count', 'linecount.js'],
+        //['Word count', 'wordcount.js'],
+        //['Tweet sources', 'tweetsource.js'],
+        //['Swear words', 'swears.js'],
+        //['Hashtag usage', 'hashtagusage.js'],
+        //['Link types', 'linktypes.js'],
+        ['Word Times', 'wordtimes.js']
     ];
 
     var pluginCount = pluginsToLoad.length;
@@ -45,13 +46,13 @@ var tweetgrinder = (function() {
         log('Executing '+pluginCount+' plugins');
         log('');
 
+        var anchor = document.getElementById('output_anchor');
         for(i=0,j=plugins.length;i<j; i++) {
             if(plugins[i].useGraph) {
                 var element = document.createElement('div');
                 element.className = 'output_element';
                 var canvas = document.createElement('canvas');
                 canvas.width = canvas.height = '500';
-                var anchor = document.getElementById('output_anchor');
                 element.appendChild(canvas);
                 anchor.parentNode.insertBefore(element,anchor);
                 var context = canvas.getContext('2d');
@@ -99,6 +100,34 @@ var tweetgrinder = (function() {
         ready = (++pluginsLoaded == pluginCount);
         if(ready) {
             log('All plugins loaded');
+
+            var anchor = document.getElementById('config_anchor');
+            for(var i = 0, j=plugins.length; i<j; i++) {
+                if(plugins[i].config) {
+                    var element = document.createElement('div');
+                    element.className = 'config_element';
+
+                    for (var item in plugins[i].config) {
+                        var configInput = document.createElement('input');
+                        configInput.type = plugins[i].config[item].type;
+                        configInput.value = plugins[i].config[item].value;
+                        configInput.id = 'plugin_'+i+'_config_'+item;
+                        configInput.onchange = (function(plugin, configItem){
+                            return function(){
+                                plugin.config[configItem].value = this.value;
+                            }
+                        })(plugins[i],item);
+                        var label = document.createElement('label');
+                        label.innerHTML = plugins[i].config[item].label;
+                        label.htmlFor = configInput.id;
+                        element.appendChild(configInput);
+                        element.appendChild(label);
+                        element.appendChild(document.createElement('br'));
+                    }
+
+                    anchor.parentNode.insertBefore(element,anchor);
+                }
+            }
         }
     }
 
@@ -141,7 +170,8 @@ var tweetgrinder = (function() {
             during:function(){},
             after:function(){},
             useGraph:false,
-            graphContext:null
+            graphContext:null,
+            config:null
         }
     }
 
