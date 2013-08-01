@@ -12,16 +12,23 @@
             word : {
                 type : 'text',
                 value : '',
-                label : 'text to search for'
+                label : 'search terms (comma separated)'
             }
         };
 
         var times;
+        var searchTerms;
+        var searchTermCount;
 
         this.before = function(c) {
+            searchTerms = this.config.word.value.split(',');
+            searchTermCount = searchTerms.length;
             times = [];
-            for(var i= 0; i<24; i++) {
-                times[i] = 0;
+            for(var i=0;i<searchTermCount; i++) {
+                times[i] = [];
+                for(var h= 0; h<24; h++) {
+                    times[i][h] = 0;
+                }
             }
         }
 
@@ -29,8 +36,10 @@
          * Receives one line of data at a time
          */
         this.during = function(line, c) {
-            if(line[c.text].indexOf(this.config.word.value) != -1) {
-                times[parseInt(line[c.timestamp].match(/(\d\d):/)[1])] ++;
+            for(var i=0;i<searchTermCount; i++) {
+                if(line[c.text].indexOf(searchTerms[i]) != -1) {
+                    times[i][parseInt(line[c.timestamp].match(/(\d\d):/)[1])] ++;
+                }
             }
         }
 
@@ -39,34 +48,49 @@
          */
         this.after = function(c) {
             var labels = [];
-            var dataSet = [];
+            var dataSets = [];
+            var words=[];
 
-            for(var i= 0, j=times.length; i<j; i++) {
-                labels.push(i);
-                dataSet.push(times[i]);
+            for(var h= 0; h<24; h++) {
+                labels.push(h);
+            }
+
+            console.log('sasdads');
+
+
+            for(var i=0; i<searchTermCount; i++) {
+                var dataSet = [];
+                for(var j= 0, k=times[i].length; j<k; j++) {
+                    dataSet.push(times[i][j]);
+                }
+
+                var randRGB = randCol() + ',' + randCol() + ',' + randCol();
+                dataSets.push({
+                    fillColor : "rgba("+randRGB+",0.5)",
+                    strokeColor : "rgba("+randRGB+",1)",
+                    pointColor : "rgba("+randRGB+",1)",
+                    data: dataSet
+                });
+                words.push('<span style="color:rgb('+randRGB+')">'+searchTerms[i]+'</span>');
             }
 
             var data = {
                 'labels': labels,
-                datasets : [
-                    {
-                        fillColor : "rgba(220,220,220,0.5)",
-                        strokeColor : "rgba(220,220,220,1)",
-                        pointColor : "rgba(220,220,220,1)",
-                        pointStrokeColor : "#fff",
-                        data: dataSet
-                    }
-                ]
+                datasets : dataSets
             }
 
             var outputDiv = this.graphContext.canvas.parentNode;
             var titleSpan = document.createElement('span');
             titleSpan.style.fontWeight = 'bold';
-            titleSpan.innerHTML = 'Times the term "'+this.config.word.value+'" has been used';
+            titleSpan.innerHTML = words.join(' ');
             outputDiv.appendChild(titleSpan);
 
             new Chart(this.graphContext).Line(data, {animation:false});
         }
+    }
+
+    function randCol() {
+        return Math.ceil((Math.random()*255));
     }
 
     plugin.prototype = t.pluginPrototype;
