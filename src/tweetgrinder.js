@@ -56,6 +56,8 @@ var tweetgrinder = (function() {
                 anchor.parentNode.insertBefore(element,anchor);
                 var context = canvas.getContext('2d');
                 plugins[i].graphContext = context;
+                document.getElementById('graph_output').style.display='block';
+                document.getElementById('graph_output').previousElementSibling.style.display='block';
             }
 
             plugins[i].before(c);
