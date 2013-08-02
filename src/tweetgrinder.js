@@ -45,10 +45,10 @@ var tweetgrinder = (function() {
     /**
      * Commonly used elements
      */
-    var $drop = $('#drop');
-    var $output = $('#output');
-    var $graphOutput = $('#graph_output');
-    var $configArea = $('#config_area');
+    var $drop = $('#drop'),
+        $output = $('#output'),
+        $graphOutput = $('#graph_output'),
+        $configArea = $('#config_area');
 
 
     /**
@@ -227,6 +227,11 @@ var tweetgrinder = (function() {
      */
     function init()
     {
+        $drop = $('#drop');
+        $output = $('#output');
+        $graphOutput = $('#graph_output');
+        $configArea = $('#config_area');
+
         loadPlugins();
 
         $drop.bind('drop', drop);
