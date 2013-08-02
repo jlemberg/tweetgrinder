@@ -27,56 +27,40 @@ var tweetgrinder = (function() {
     var pluginCount = pluginsToLoad.length;
     var pluginsLoaded = 0;
 
-    var tweet_data = null;
+    var tweetData = null;
 
     var ready = false;
 
-    var $drop = document.getElementById('drop');
+    var $drop = $('#drop');
+    var $output = $('#output');
+    var $graphOutput = $('#graph_output');
+    var $configArea = $('#config_area');
 
-    function log(msg, noNewline) {
-        //console.log(msg);
-        document.getElementById('output').innerHTML += msg;
-        if(!noNewline) {
-            document.getElementById('output').innerHTML += '<br />';
-        }
-    }
-
-    function err(msg) {
-        // todo ... something
-    }
-
-    function main() {
+    function grind() {
         var i, j, k, l;
 
         var start = new Date().getTime();
 
-        document.getElementById('output').innerHTML = '';
+        $output.html('');
 
-        log('Executing '+pluginCount+' plugins');
-        log('');
+        log("Executing "+pluginCount+" plugins\n");
 
         for(i=0,j=plugins.length;i<j; i++) {
             if(plugins[i].useGraph) {
-                document.getElementById('graph_output').style.display='block';
-                document.getElementById('graph_output').previousElementSibling.style.display='block';
+                $graphOutput.css( {display:'block'} );
+                $graphOutput.prev().css( {display:'block'} );
 
-                // clear plugin canvas
                 plugins[i].graphContext.canvas.width = plugins[i].graphContext.canvas.width;
 
-                var nextOfKin = plugins[i].graphContext.canvas.nextSibling;
-                while(nextOfKin) {
-                    var next = nextOfKin.nextSibling;
-                    nextOfKin.parentNode.removeChild(nextOfKin);
-                    nextOfKin = next;
-                }
+                $(plugins[i].graphContext.canvas.parentNode).children().not('canvas').remove();
             }
 
             plugins[i].before(c);
-            plugins[i].global(tweet_data, c);
+            plugins[i].global(tweetData, c);
         }
-        for(i=1,j=tweet_data.length;i<j;i++) {
+        for(i=1,j=tweetData.length;i<j;i++) {
             for(k=0,l=plugins.length;k<l; k++) {
-                plugins[k].during(tweet_data[i], c);
+                plugins[k].during(tweetData[i], c);
             }
         }
         for(i=0,j=plugins.length;i<j; i++) {
@@ -116,50 +100,46 @@ var tweetgrinder = (function() {
     }
 
     function initPlugins() {
-        var confAnchor = document.getElementById('config_anchor');
-        var outputAnchor = document.getElementById('output_anchor');
+        var $confAnchor = $('#config_anchor');
+        var $outputAnchor = $('#output_anchor');
 
         for(var i = 0, j=plugins.length; i<j; i++) {
             log('Initializing plugin "'+plugins[i].name+'"... ', true);
+
             if(plugins[i].config) {
-                var element = document.createElement('div');
-                element.className = 'config_element';
-                document.getElementById('config_area').style.display='block';
-                document.getElementById('config_area').previousElementSibling.style.display='block';
+                var $element = $('<div class="config_element"></div>');
+                $configArea.css({display:'block'});
+                $configArea.prev().css({display:'block'});
 
                 for (var item in plugins[i].config) {
-                    var configInput = document.createElement('input');
-                    configInput.type = plugins[i].config[item].type;
-                    configInput.value = plugins[i].config[item].value;
-                    configInput.id = 'plugin_'+i+'_config_'+item;
-                    configInput.onchange = (function(plugin, configItem){
+                    var p = plugins[i].config[item];
+                    var $configInput = $('<input type="'+ p.type+'" value="'+ p.value +'" id="plugin_'+i+'_config_'+item+'"/>');
+
+                    $configInput.bind('change', (function(plugin, configItem){
                         return function(){
                             plugin.config[configItem].value = this.value;
                         }
-                    })(plugins[i],item);
-                    var label = document.createElement('label');
-                    label.innerHTML = plugins[i].config[item].label;
-                    label.htmlFor = configInput.id;
-                    var title = document.createElement('span');
-                    title.style.fontWeight = 'bold';
-                    title.innerHTML = plugins[i].name;
-                    element.appendChild(title);
-                    element.appendChild(document.createElement('br'));
-                    element.appendChild(configInput);
-                    element.appendChild(label);
-                    element.appendChild(document.createElement('br'));
+                    })(plugins[i],item));
+
+                    var $label = $('<label for="'+$configInput.attr('id')+'">'+ p.label +'</label>');
+                    var $title = $('<span>'+plugins[i].name+'</span>');
+
+                    $element.append($title)
+                            .append('<br />')
+                            .append($configInput)
+                            .append($label)
+                            .append('<br />');
                 }
 
-                confAnchor.parentNode.insertBefore(element,confAnchor);
+                $element.insertBefore($confAnchor);
             }
             if(plugins[i].useGraph) {
-                element = document.createElement('div');
-                element.className = 'output_element';
-                var canvas = document.createElement('canvas');
-                canvas.width = canvas.height = '500';
-                element.appendChild(canvas);
-                outputAnchor.parentNode.insertBefore(element,outputAnchor);
-                var context = canvas.getContext('2d');
+                $element = $('<div class="output_element"></div>');
+                var $canvas = $('<canvas width="500" height="500"></canvas>')
+
+                $element.append($canvas);
+                $element.insertBefore($outputAnchor);
+                var context = $canvas[0].getContext('2d');
                 plugins[i].graphContext = context;
             }
             log('done');
@@ -171,23 +151,23 @@ var tweetgrinder = (function() {
         event.stopPropagation();
         event.preventDefault();
 
-        if(event.dataTransfer.files.length > 1 || !ready) {
-            // more than one file ain't supported, yo
-            // todo error reporting and such
+        originalEvent = event.originalEvent;
+
+        if(originalEvent.dataTransfer.files.length > 1 || !ready) {
             return;
         }
 
-        $drop.removeEventListener('drop', drop);
-        $drop.removeEventListener('dragover', dragOver);
+        $drop.unbind('drop', drop);
+        $drop.unbind('dragover', dragOver);
 
-        var file = event.dataTransfer.files[0];
+        var file = originalEvent.dataTransfer.files[0];
 
         var fileReader = new FileReader();
 
         fileReader.onload = function(readEvent) {
-            tweet_data = parser.csv.toArrays(readEvent.target.result);
-            $drop.innerHTML = 'Now click here to start GRINDING';
-            $drop.addEventListener('click', main);
+            tweetData = $.csv.toArrays(readEvent.target.result);
+            $drop.html('Now click here to start GRINDING');
+            $drop.bind('click', grind);
         };
 
         fileReader.readAsText(file);
@@ -196,14 +176,20 @@ var tweetgrinder = (function() {
     function dragOver(e){
         e.stopPropagation();
         e.preventDefault();
-        e.dataTransfer.dropEffect='copy';
+        e.originalEvent.dataTransfer.dropEffect = 'copy';
     }
 
     function init() {
         loadPlugins();
 
-        $drop.addEventListener('drop', drop, false);
-        $drop.addEventListener('dragover', dragOver, false);
+        $drop.bind('drop', drop);
+        $drop.bind('dragover', dragOver);
+    }
+
+
+    function log(msg, noNewline) {
+        if(!noNewline) msg += '<br />';
+        $output.append(msg);
     }
 
     var exports = {
@@ -225,4 +211,4 @@ var tweetgrinder = (function() {
     return exports;
 })();
 
-tweetgrinder.init();
+$(document).ready(function(){tweetgrinder.init();})
