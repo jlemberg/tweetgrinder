@@ -13,15 +13,20 @@
                 DEV = true;
             }
 
-            var scriptSrc;
+            (function(){
+                var scriptSrc;
 
-            if(DEV) {
-                scriptSrc = 'src/tweetgrinder.js';
-            } else {
-                scriptSrc = 'dist/tweetgrinder.min.js';
-            }
+                if(DEV) {
+                    scriptSrc = 'src/tweetgrinder.js';
+                } else {
+                    scriptSrc = 'dist/tweetgrinder.min.js';
+                }
 
-            document.write('<script type="text/javascript" src="'+scriptSrc+'"><\/script>');
+                var script = document.createElement('script');
+                script.type='text/javascript';
+                script.src=scriptSrc;
+                document.head.appendChild(script);
+            })();
 
         </script>
     </head>
