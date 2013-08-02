@@ -64,10 +64,10 @@ var tweetgrinder = (function() {
 
         log("Executing "+pluginCount+" plugins\n");
 
-        for(i=0,j=plugins.length;i<j; i++) {
+        for(i = 0, j = plugins.length; i < j; i++) {
             if(plugins[i].useGraph) {
-                $graphOutput.css( {display:'block'} );
-                $graphOutput.prev().css( {display:'block'} );
+                $graphOutput.css({ display: 'block' });
+                $graphOutput.prev().css({ display: 'block' });
 
                 plugins[i].graphContext.canvas.width = plugins[i].graphContext.canvas.width;
 
@@ -77,12 +77,12 @@ var tweetgrinder = (function() {
             plugins[i].before(c);
             plugins[i].global(tweetData, c);
         }
-        for(i=1,j=tweetData.length;i<j;i++) {
-            for(k=0,l=plugins.length;k<l; k++) {
+        for(i = 1, j = tweetData.length; i < j; i++) {
+            for(k = 0, l = plugins.length; k < l; k++) {
                 plugins[k].during(tweetData[i], c);
             }
         }
-        for(i=0,j=plugins.length;i<j; i++) {
+        for(i = 0, j = plugins.length; i < j; i++) {
             log('Plugin '+plugins[i].name+':');
             plugins[i].after(c);
             log('');
@@ -115,7 +115,7 @@ var tweetgrinder = (function() {
     function loadPlugins()
     {
         log('Loading plugins');
-        for(var i=0; i<pluginCount; i++) {
+        for(var i = 0; i < pluginCount; i++) {
             log('Loading plugin "'+pluginsToLoad[i]+'" ('+(i+1)+'/'+pluginCount+')');
             var script = document.createElement('script');
             script.type = 'text/javascript';
@@ -140,7 +140,7 @@ var tweetgrinder = (function() {
         var $confAnchor = $('#config_anchor');
         var $outputAnchor = $('#output_anchor');
 
-        for(var i = 0, j=plugins.length; i<j; i++) {
+        for(var i = 0, j=plugins.length; i < j; i++) {
             log('Initializing plugin "'+plugins[i].name+'"... ', true);
 
             if(plugins[i].config) {
@@ -183,12 +183,12 @@ var tweetgrinder = (function() {
         }
     }
 
+
     /**
      * Event listeners
      */
     function drop(event)
     {
-
         event.stopPropagation();
         event.preventDefault();
 
