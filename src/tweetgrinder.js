@@ -1,6 +1,10 @@
 var tweetgrinder = (function() {
 
-    var c = {
+    /**
+     * Twitter-CSV-Constants
+     */
+    var c =
+    {
         tweet_id                    : 0,
         in_reply_to_status_id       : 1,
         in_reply_to_user_id         : 2,
@@ -12,9 +16,12 @@ var tweetgrinder = (function() {
         expanded_urls               : 8
     };
 
-    var plugins = [];
 
-    var pluginsToLoad = [
+    /**
+     * Plugins
+     */
+    var pluginsToLoad =
+    [
         'linecount',
         'wordcount',
         'tweetsource',
@@ -24,19 +31,31 @@ var tweetgrinder = (function() {
         'tweettimes'
     ];
 
+    var plugins = [];
     var pluginCount = pluginsToLoad.length;
     var pluginsLoaded = 0;
+    var allPluginsLoaded = false;
 
+    /**
+     * Parsed CSV-Array
+     */
     var tweetData = null;
 
-    var ready = false;
 
+    /**
+     * Commonly used elements
+     */
     var $drop = $('#drop');
     var $output = $('#output');
     var $graphOutput = $('#graph_output');
     var $configArea = $('#config_area');
 
-    function grind() {
+
+    /**
+     * Main function
+     */
+    function grind()
+    {
         var i, j, k, l;
 
         var start = new Date().getTime();
@@ -74,11 +93,27 @@ var tweetgrinder = (function() {
         log('Total plugin execution time: ' + time + 'ms');
     }
 
-    function hookPlugin(plug) {
+
+    /**
+     * Util functions
+     */
+    function log(msg, noNewline)
+    {
+        if(!noNewline) msg += '<br />';
+        $output.append(msg);
+    }
+
+
+    /**
+     * Plugin functions
+     */
+    function hookPlugin(plug)
+    {
         plugins.push(plug);
     }
 
-    function loadPlugins() {
+    function loadPlugins()
+    {
         log('Loading plugins');
         for(var i=0; i<pluginCount; i++) {
             log('Loading plugin "'+pluginsToLoad[i]+'" ('+(i+1)+'/'+pluginCount+')');
@@ -91,15 +126,17 @@ var tweetgrinder = (function() {
         }
     }
 
-    function scriptOnload() {
-        ready = (++pluginsLoaded == pluginCount);
-        if(ready) {
+    function scriptOnload()
+    {
+        allPluginsLoaded = (++pluginsLoaded == pluginCount);
+        if(allPluginsLoaded) {
             log('All plugins loaded');
             initPlugins();
         }
     }
 
-    function initPlugins() {
+    function initPlugins()
+    {
         var $confAnchor = $('#config_anchor');
         var $outputAnchor = $('#output_anchor');
 
@@ -146,14 +183,18 @@ var tweetgrinder = (function() {
         }
     }
 
-    function drop(event) {
+    /**
+     * Event listeners
+     */
+    function drop(event)
+    {
 
         event.stopPropagation();
         event.preventDefault();
 
         originalEvent = event.originalEvent;
 
-        if(originalEvent.dataTransfer.files.length > 1 || !ready) {
+        if(originalEvent.dataTransfer.files.length > 1 || !allPluginsLoaded) {
             return;
         }
 
@@ -173,13 +214,19 @@ var tweetgrinder = (function() {
         fileReader.readAsText(file);
     }
 
-    function dragOver(e){
+    function dragOver(e)
+    {
         e.stopPropagation();
         e.preventDefault();
         e.originalEvent.dataTransfer.dropEffect = 'copy';
     }
 
-    function init() {
+
+    /**
+     * Init function
+     */
+    function init()
+    {
         loadPlugins();
 
         $drop.bind('drop', drop);
@@ -187,12 +234,11 @@ var tweetgrinder = (function() {
     }
 
 
-    function log(msg, noNewline) {
-        if(!noNewline) msg += '<br />';
-        $output.append(msg);
-    }
-
-    var exports = {
+    /**
+     * Public exports
+     */
+    var exports =
+    {
         'hookPlugin': hookPlugin,
         'init': init,
         'log' : log,
