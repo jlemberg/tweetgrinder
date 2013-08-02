@@ -6,7 +6,24 @@
         <script type="text/javascript" src="lib/jquery-2.0.3.min.js"></script>
         <script type="text/javascript" src="lib/jquery.csv-0.71.min.js"></script>
         <script type="text/javascript" src="lib/Chart.min.js"></script>
-        <script type="text/javascript" src='src/tweetgrinder.js'></script>
+        <script type="text/javascript">
+
+            var DEV = false;
+            if(document.location.href.indexOf('file') === 0 || document.cookie == 'DEV=true') {
+                DEV = true;
+            }
+
+            var scriptSrc;
+
+            if(DEV) {
+                scriptSrc = 'src/tweetgrinder.js';
+            } else {
+                scriptSrc = 'dist/tweetgrinder.min.js';
+            }
+
+            document.write('<script type="text/javascript" src="'+scriptSrc+'"><\/script>');
+
+        </script>
     </head>
     <body>
         <a href="https://github.com/jlemberg/tweetgrinder" target="_blank"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_darkblue_121621.png" alt="Fork me on GitHub"></a>
