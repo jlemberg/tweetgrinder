@@ -3,7 +3,8 @@ var tweetgrinder = (function() {
     /**
      * Twitter-CSV-Constants
      */
-    var c =
+    var c = {};
+    /*
     {
         tweet_id                    : 0,
         in_reply_to_status_id       : 1,
@@ -15,6 +16,7 @@ var tweetgrinder = (function() {
         text                        : 7,
         expanded_urls               : 8
     };
+    */
 
 
     /**
@@ -207,6 +209,9 @@ var tweetgrinder = (function() {
 
         fileReader.onload = function(readEvent) {
             tweetData = $.csv.toArrays(readEvent.target.result);
+            for(var i = 0, j = tweetData[0].length; i<j; i++) {
+                c[tweetData[0][i]] = i;
+            }
             $drop.html('Now click here to start GRINDING');
             $drop.bind('click', grind);
         };
