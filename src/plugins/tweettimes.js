@@ -13,17 +13,24 @@
                 type : 'text',
                 value : '',
                 label : 'search terms (comma separated)'
+            },
+            ignoretimestamp : {
+                type : 'text',
+                value : '00:00:00',
+                label : 'ignore timestamps containing this'
             }
         };
 
         var times;
         var searchTerms;
         var searchTermCount;
+        var ignoredLines;
 
         this.before = function(c) {
             searchTerms = this.config.word.value.split(',');
             searchTermCount = searchTerms.length;
             times = [];
+            ignoredLines = 0;
             for(var i=0;i<searchTermCount; i++) {
                 times[i] = [];
                 for(var h= 0; h<24; h++) {
@@ -37,6 +44,10 @@
          */
         this.during = function(line, c) {
             for(var i=0;i<searchTermCount; i++) {
+                if(line[c.timestamp].match(this.config.ignoretimestamp.value) !== null) {
+                    ignoredLines++;
+                    continue;
+                }
                 if(line[c.text].indexOf(searchTerms[i]) != -1) {
                     times[i][parseInt(line[c.timestamp].match(/(\d\d):/)[1])] ++;
                 }
@@ -83,6 +94,8 @@
             titleSpan.style.fontWeight = 'bold';
             titleSpan.innerHTML = words.join(' ');
             outputDiv.appendChild(titleSpan);
+
+            t.log(ignoredLines + ' tweets have been ignored');
 
             new Chart(this.graphContext).Line(data, {animation:false});
         }
