@@ -44,7 +44,7 @@
          */
         this.during = function(line, c) {
             for(var i=0;i<searchTermCount; i++) {
-                if(line[c.timestamp].match(this.config.ignoretimestamp.value) !== null) {
+                if(this.config.ignoretimestamp.value !== "" && line[c.timestamp].match(this.config.ignoretimestamp.value) !== null) {
                     ignoredLines++;
                     continue;
                 }
