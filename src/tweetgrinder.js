@@ -90,6 +90,8 @@ var tweetgrinder = (function() {
             log('');
         }
 
+        $(window).scrollTop($graphOutput.offset().top-60);
+
         var end = new Date().getTime();
         var time = end - start;
         log('Total plugin execution time: ' + time + 'ms');
@@ -150,6 +152,11 @@ var tweetgrinder = (function() {
                 $configArea.css({display:'block'});
                 $configArea.prev().css({display:'block'});
 
+                var $title = $('<span>'+plugins[i].name+'</span>');
+
+                $element.append($title)
+                        .append('<br />');
+
                 for (var item in plugins[i].config) {
                     var p = plugins[i].config[item];
                     var $configInput = $('<input type="'+ p.type+'" value="'+ p.value +'" id="plugin_'+i+'_config_'+item+'"/>');
@@ -161,11 +168,8 @@ var tweetgrinder = (function() {
                     })(plugins[i],item));
 
                     var $label = $('<label for="'+$configInput.attr('id')+'">'+ p.label +'</label>');
-                    var $title = $('<span>'+plugins[i].name+'</span>');
 
-                    $element.append($title)
-                            .append('<br />')
-                            .append($configInput)
+                    $element.append($configInput)
                             .append($label)
                             .append('<br />');
                 }
